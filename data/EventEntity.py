@@ -1,7 +1,7 @@
 import datetime
 import uuid
 
-from sqlalchemy import Column, Integer, String, Date
+from sqlalchemy import Column, Integer, String, DateTime
 
 from base import Base
 
@@ -10,10 +10,10 @@ class EventEntity(Base):
     __tablename__ = 'events'
 
     id = Column(Integer, primary_key=True)
-    uid: Column(String)
-    name: Column(String)
-    date_start: Column(Date)
-    date_end: Column(Date)
+    uid = Column(String)
+    name = Column(String)
+    date_start = Column(DateTime)
+    date_end = Column(DateTime)
 
     def __init__(self, name, date_start, date_end, uid=None):
         self.name = name

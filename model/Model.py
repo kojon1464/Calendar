@@ -1,59 +1,52 @@
 from calendar import Calendar
-from datetime import datetime, time
+from datetime import datetime, time, date, timedelta
 from typing import List
 
 from data.CalendarEntity import CalendarEntity
 from data.EventEntity import EventEntity
 from model.CalendarProviderInterface import CalendarProviderInterface
+from model.ModelInterface import ModelInterface
+from model.ObjectDetailsDTO import ObjectDetailsDTO
+from model.ObjectDetailsProviderInterface import ObjectDetailsProviderInterface
+from repository.EventRepository import EventRepository
 from view.CalendarObserverInterface import CalendarObserverInterface
+from view.ObjectDetailsObserverInterface import ObjectDetailsObserverInterface
 
 
-class Model(CalendarProviderInterface):
+class Model(CalendarProviderInterface, ObjectDetailsProviderInterface, ModelInterface):
+
     calendar: CalendarEntity
-    observers: List[CalendarObserverInterface] = []
+    object_details: ObjectDetailsDTO
+    calendar_observers: List[CalendarObserverInterface] = []
+    object_details_observers: List[ObjectDetailsObserverInterface] = []
+    event_repository: EventRepository
 
     def __init__(self):
-        pass
+        self.event_repository = EventRepository()
+
+        event = EventEntity('test', datetime.combine(datetime.now().date(), time(8)), datetime.combine(datetime.now().date(), time(18)))
+        event1 = EventEntity('test1', datetime.combine(datetime.now().date(), time(10)), datetime.combine(datetime.now().date(), time(12)))
+        event2 = EventEntity('test2', datetime.combine(datetime.now().date(), time(11)), datetime.combine(datetime.now().date(), time(18)))
+        event3 = EventEntity('test3', datetime.combine(datetime.now().date(), time(15)),
+                             datetime.combine(datetime.now().date(), time(20)))
+
+        self.event_repository.save(event)
+        self.event_repository.save(event1)
+        self.event_repository.save(event2)
+        self.event_repository.save(event3)
 
     def initialize(self):
         self.calendar = CalendarEntity()
-        self.calendar.date = datetime.now().date()
-        self.calendar.week = self.get_week(self.calendar.date)
+        self.set_calendar_for_date(datetime.now().date())
 
-        event = EventEntity()
-        event.name = 'test'
-        event.date_start = datetime.combine(datetime.now().date(), time(15))
-        event.date_end = datetime.now()
+    def set_calendar_for_date(self, date: datetime.date):
+        self.calendar.date = date
 
-        event1 = EventEntity()
-        event1.name = 'test2'
-        event1.date_start = datetime.combine(datetime.now().date(), time(16, 30))
-        event1.date_end = datetime.combine(datetime.now().date(), time(18))
+        week = self.get_week(self.calendar.date)
+        self.calendar.week = week
+        self.calendar.events = set(self.event_repository.get_events_between_dates(week[0], week[6]))
 
-        event2 = EventEntity()
-        event2.name = 'test3'
-        event2.date_start = datetime.combine(datetime.now().date(), time(16, 30))
-        event2.date_end = datetime.combine(datetime.now().date(), time(18))
-
-        event3 = EventEntity()
-        event3.name = 'test3'
-        event3.date_start = datetime.combine(datetime.now().date(), time(18, 30))
-        event3.date_end = datetime.combine(datetime.now().date(), time(23))
-
-        self.calendar.events = {event, event1, event2, event3}
-
-        self.notify()
-
-    def subscribe(self, observer: CalendarObserverInterface):
-        if observer not in self.observers:
-            self.observers.append(observer)
-
-    def unsubscribe(self, observer: CalendarObserverInterface):
-        self.observers.remove(observer)
-
-    def notify(self):
-        for observer in self.observers:
-            observer.update_calendar(self.calendar)
+        self.notify_calendar()
 
     def get_week(self, date: datetime.date) -> List[datetime.date]:
         return self.get_week_helper(date.year, self.get_week_number(date))
@@ -65,3 +58,40 @@ class Model(CalendarProviderInterface):
 
     def get_week_number(self, date: datetime.date):
         return date.isocalendar()[1]
+
+    def change_to_next_week(self):
+        week_delta = timedelta(7)
+        self.set_calendar_for_date(self.calendar.date + week_delta)
+
+    def change_to_previous_week(self):
+        week_delta = timedelta(7)
+        self.set_calendar_for_date(self.calendar.date - week_delta)
+
+    def add_event(self, event: EventEntity):
+        self.event_repository.save(event)
+
+    # region CalendarProviderInterface
+    def subscribe_calendar(self, observer: CalendarObserverInterface):
+        if observer not in self.calendar_observers:
+            self.calendar_observers.append(observer)
+
+    def unsubscribe_calendar(self, observer: CalendarObserverInterface):
+        self.calendar_observers.remove(observer)
+
+    def notify_calendar(self):
+        for observer in self.calendar_observers:
+            observer.update_calendar(self.calendar)
+    # endregion
+
+    # region ObjectDetailsProviderInterface
+    def subscribe_details(self, observer: ObjectDetailsObserverInterface):
+        if observer not in self.object_details_observers:
+            self.object_details_observers.append(observer)
+
+    def unsubscribe_details(self, observer: ObjectDetailsObserverInterface):
+        self.object_details_observers.remove(observer)
+
+    def notify(self):
+        for observer in self.object_details_observers:
+            observer.update_calendar(self.object_details)
+    # endregion

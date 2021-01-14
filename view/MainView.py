@@ -4,16 +4,19 @@ from view.CalendarObserverInterface import CalendarObserverInterface
 
 import tkinter as tk
 
+from view.ControlViewFrame import ControlViewFrame
+from view.MainViewInterface import MainViewInterface
 from view.WeekViewFrame import WeekViewFrame
 
 TITLE = "Calendar"
-WINDOW_SIZE = "1500x700"
+WINDOW_SIZE = "1600x900"
 
-class MainView(CalendarObserverInterface):
+
+class MainView(CalendarObserverInterface, MainViewInterface):
 
     controller: MainController
-    root: tk.Tk
 
+    root: tk.Tk
     def __init__(self, controller):
         self.controller = controller
 
@@ -22,16 +25,27 @@ class MainView(CalendarObserverInterface):
         self.root.title(TITLE)
         self.root.geometry(WINDOW_SIZE)
         self.root.grid_rowconfigure(0, weight=1)
-        self.root.grid_columnconfigure(0, weight=1)
+        self.root.grid_columnconfigure(1, weight=1)
 
-        self.frame = WeekViewFrame(self.root, self)
-        self.frame.grid(column=0, row=0, sticky='nsew')
+        self.control_frame = ControlViewFrame(self.root, self.controller)
+        self.control_frame.grid(column=0, row=0)
+
+        self.week_frame = WeekViewFrame(self.root, self.controller)
+        self.week_frame.grid(column=1, row=0, sticky='nsew')
 
         self.root.update()
-
 
     def start(self):
         self.root.mainloop()
 
     def update_calendar(self, calendar: CalendarEntity):
-        self.frame.update_view(calendar)
+        self.week_frame.update_view(calendar)
+
+    def get_top_level(self, title):
+        self.top = tk.Toplevel()
+        self.top.title(title)
+        self.top.grab_set()
+        return self.top
+
+    def get_root(self):
+        return self.root

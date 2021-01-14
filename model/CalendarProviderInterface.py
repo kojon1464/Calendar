@@ -5,13 +5,13 @@ from view.CalendarObserverInterface import CalendarObserverInterface
 
 class CalendarProviderInterface(ABC):
     @abstractmethod
-    def subscribe(self, observer: CalendarObserverInterface):
+    def subscribe_calendar(self, observer: CalendarObserverInterface):
         pass
 
     @abstractmethod
-    def unsubscribe(self, observer: CalendarObserverInterface):
+    def unsubscribe_calendar(self, observer: CalendarObserverInterface):
         pass
 
     @abstractmethod
-    def notify(self):
+    def notify_calendar(self):
         pass
