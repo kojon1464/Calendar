@@ -13,5 +13,5 @@ class ObjectDetailsProviderInterface(ABC):
         pass
 
     @abstractmethod
-    def notify(self):
+    def notify_details(self):
         pass

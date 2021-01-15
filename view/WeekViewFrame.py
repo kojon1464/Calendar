@@ -21,7 +21,6 @@ class Positions(Enum):
     RIGHT = 'right'
     MIDDLE = 'middle'
 
-
 class WeekViewFrame(tk.Frame, WeekViewInterface):
     controller: MainControllerInterface
     calendar: CalendarEntity
@@ -67,6 +66,7 @@ class WeekViewFrame(tk.Frame, WeekViewInterface):
         width = x1 - x0
         height = y1 - y0
         event_view = EventView(self.parent, event, color)
+        event_view.bind_with_children('<Button-1>', lambda e: self.controller.update_event_clicked(event.id))
         self.canvas.create_window(x0, y0, width=width, height=height, window=event_view, anchor=tk.NW, tags=(tag, EVENT_TAG))
 
     def draw_events(self):

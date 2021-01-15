@@ -1,3 +1,5 @@
+from plyer import notification
+
 from base import Base, engine
 from controller.MainController import MainController
 from data.EventEntity import EventEntity

@@ -19,9 +19,21 @@ class MainControllerInterface(ABC):
         pass
 
     @abstractmethod
+    def update_event_clicked(self, event_id):
+        pass
+
+    @abstractmethod
     def create_event(self, event: EventEntity):
         pass
 
     @abstractmethod
     def update_event(self, event: EventEntity):
+        pass
+
+    @abstractmethod
+    def delete_event(self, event: EventEntity):
+        pass
+
+    @abstractmethod
+    def check_notification(self):
         pass

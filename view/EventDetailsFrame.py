@@ -18,6 +18,9 @@ class EventDetailsFrame(AbstractEventDetailsFrame):
     def __init__(self, parent, controller: MainControllerInterface):
         super().__init__(parent, controller)
 
+        self.id = None
+        self.uid = None
+
         self.name = tk.StringVar()
         tk.Entry(self, text=self.name).pack()
 
@@ -37,8 +40,12 @@ class EventDetailsFrame(AbstractEventDetailsFrame):
         self.minute_end = tk.IntVar()
         ttk.Combobox(self, values=MINUTES, textvariable=self.minute_end, state="readonly").pack()
 
+        self.cancel_btn = tk.Button(self, text='Cancel', command=lambda: self.winfo_toplevel().destroy())
+        self.cancel_btn.pack()
+
         self.set_start_time(datetime.now().time())
         self.set_end_time(datetime.now().time())
+
 
     def set_start_time(self, time: datetime.time):
         self.hour_start.set(time.hour)
@@ -61,12 +68,18 @@ class EventDetailsFrame(AbstractEventDetailsFrame):
         if event is None:
             return
 
+        self.id = event.id
+        self.uid = event.uid
+
         self.name.set(event.name)
         self.date.set_date(event.date_start.date())
         self.set_start_time(event.date_start.time())
         self.set_end_time(event.date_end.time())
 
     def get_event(self) -> EventEntity:
-        return EventEntity(self.name.get()
+        event = EventEntity(self.name.get()
                            , self.get_start_datetime()
                            , self.get_end_datetime())
+        event.id = self.id
+        event.uid = self.uid
+        return event

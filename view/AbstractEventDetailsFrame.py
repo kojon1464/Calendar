@@ -24,6 +24,10 @@ class AbstractEventDetailsFrame(tk.Frame, ObjectDetailsObserverInterface, ABC):
         self.update_btn = tk.Button(self, text='Update', command=lambda: self.controller.update_event(self.get_event()))
         self.update_btn.pack()
 
+    def delete_button(self):
+        self.delete_btn = tk.Button(self, text='Delete', command=lambda: self.controller.delete_event(self.get_event()))
+        self.delete_btn.pack()
+
     @abstractmethod
     def get_event(self) -> EventEntity:
         pass

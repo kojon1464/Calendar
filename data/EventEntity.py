@@ -27,3 +27,8 @@ class EventEntity(Base):
 
     def get_time_label(self) -> str:
         return self.date_start.time().strftime('%H:%M') + '-' + self.date_end.time().strftime('%H:%M')
+
+    def copy_from(self, event):
+        self.name = event.name
+        self.date_start = event.date_start
+        self.date_end = event.date_end

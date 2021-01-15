@@ -13,8 +13,11 @@ from view.CalendarObserverInterface import CalendarObserverInterface
 from view.ObjectDetailsObserverInterface import ObjectDetailsObserverInterface
 
 
+MINUTES_NOTIFICATION_BEFORE = 5
+
 class Model(CalendarProviderInterface, ObjectDetailsProviderInterface, ModelInterface):
 
+    notified: List[int]
     calendar: CalendarEntity
     object_details: ObjectDetailsDTO
     calendar_observers: List[CalendarObserverInterface] = []
@@ -22,6 +25,7 @@ class Model(CalendarProviderInterface, ObjectDetailsProviderInterface, ModelInte
     event_repository: EventRepository
 
     def __init__(self):
+        self.notified = []
         self.event_repository = EventRepository()
 
         event = EventEntity('test', datetime.combine(datetime.now().date(), time(8)), datetime.combine(datetime.now().date(), time(18)))
@@ -41,7 +45,9 @@ class Model(CalendarProviderInterface, ObjectDetailsProviderInterface, ModelInte
 
     def set_calendar_for_date(self, date: datetime.date):
         self.calendar.date = date
+        self.update_calendar()
 
+    def update_calendar(self):
         week = self.get_week(self.calendar.date)
         self.calendar.week = week
         self.calendar.events = set(self.event_repository.get_events_between_dates(week[0], week[6]))
@@ -69,6 +75,34 @@ class Model(CalendarProviderInterface, ObjectDetailsProviderInterface, ModelInte
 
     def add_event(self, event: EventEntity):
         self.event_repository.save(event)
+        self.update_calendar()
+
+    def update_event(self, event: EventEntity):
+        self.event_repository.update(event)
+        self.update_calendar()
+
+    def delete_event(self, event: EventEntity):
+        self.event_repository.delete(event.id)
+        self.update_calendar()
+
+    def send_event_details(self, event_id):
+        event = self.event_repository.get(event_id)
+        self.object_details = ObjectDetailsDTO(event=event)
+        self.notify_details()
+
+    def get_events_to_notify(self) -> List[EventEntity]:
+        now = datetime.now()
+        in_5_min = now + timedelta(minutes=MINUTES_NOTIFICATION_BEFORE)
+        events = self.event_repository.get_start_date_between(now, in_5_min)
+        to_notify = []
+
+        for event in events:
+            if not event.id in self.notified:
+                to_notify.append(event)
+                self.notified.append(event.id)
+
+        return to_notify
+
 
     # region CalendarProviderInterface
     def subscribe_calendar(self, observer: CalendarObserverInterface):
@@ -91,7 +125,7 @@ class Model(CalendarProviderInterface, ObjectDetailsProviderInterface, ModelInte
     def unsubscribe_details(self, observer: ObjectDetailsObserverInterface):
         self.object_details_observers.remove(observer)
 
-    def notify(self):
+    def notify_details(self):
         for observer in self.object_details_observers:
             observer.update_calendar(self.object_details)
     # endregion

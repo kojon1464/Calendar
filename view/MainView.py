@@ -1,4 +1,5 @@
 from controller import MainController
+from controller.MainControllerInterface import MainControllerInterface
 from data.CalendarEntity import CalendarEntity
 from view.CalendarObserverInterface import CalendarObserverInterface
 
@@ -14,7 +15,7 @@ WINDOW_SIZE = "1600x900"
 
 class MainView(CalendarObserverInterface, MainViewInterface):
 
-    controller: MainController
+    controller: MainControllerInterface
 
     root: tk.Tk
     def __init__(self, controller):
@@ -36,6 +37,7 @@ class MainView(CalendarObserverInterface, MainViewInterface):
         self.root.update()
 
     def start(self):
+        self.check_notifications()
         self.root.mainloop()
 
     def update_calendar(self, calendar: CalendarEntity):
@@ -46,6 +48,10 @@ class MainView(CalendarObserverInterface, MainViewInterface):
         self.top.title(title)
         self.top.grab_set()
         return self.top
+
+    def check_notifications(self):
+        self.controller.check_notification()
+        self.root.after(1000, self.check_notifications)
 
     def get_root(self):
         return self.root

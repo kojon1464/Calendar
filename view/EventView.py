@@ -15,3 +15,9 @@ class EventView(tk.Frame):
 
         self.time = tk.Label(self, text=event.get_time_label(), bg=color)
         self.time.grid(row=1, column=0,  sticky='w')
+
+    def bind_with_children(self, sequence, callback):
+        self.bind(sequence, callback)
+
+        for child in self.winfo_children():
+            child.bind(sequence, callback)
