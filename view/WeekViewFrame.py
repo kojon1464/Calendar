@@ -8,7 +8,7 @@ from controller.MainControllerInterface import MainControllerInterface
 from data.CalendarEntity import CalendarEntity
 from data.EventEntity import EventEntity
 from view.EventView import EventView
-from view.WeekViewInterface import WeekViewInterface
+from view.EventsViewInterface import EventsViewInterface
 
 DAY_FILED_HEIGHT = 80
 
@@ -21,7 +21,7 @@ class Positions(Enum):
     RIGHT = 'right'
     MIDDLE = 'middle'
 
-class WeekViewFrame(tk.Frame, WeekViewInterface):
+class WeekViewFrame(tk.Frame, EventsViewInterface):
     controller: MainControllerInterface
     calendar: CalendarEntity
 
@@ -107,10 +107,13 @@ class WeekViewFrame(tk.Frame, WeekViewInterface):
             for event in without:
                 if Positions.LEFT not in taken:
                     self.ensure_tag(event, Positions.LEFT.value)
+                    taken.append(Positions.LEFT)
                 elif Positions.RIGHT not in taken:
                     self.ensure_tag(event, Positions.RIGHT.value)
+                    taken.append(Positions.RIGHT)
                 elif Positions.MIDDLE not in taken:
                     self.ensure_tag(event, Positions.MIDDLE.value)
+                    taken.append(Positions.MIDDLE)
 
         for event in self.canvas.find_withtag(EVENT_TAG + day_number.__str__()):
             self.move_event_to_correct_position(event)

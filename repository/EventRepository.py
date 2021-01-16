@@ -11,12 +11,15 @@ class EventRepository(AbstractRepository):
     def get_type(self):
         return EventEntity
 
-    def get_events_between_dates(self, start: datetime.date, end: datetime.date):
+    def get_not_loose_between_dates(self, start: datetime.date, end: datetime.date):
         end_datetime = datetime.combine(end, time(23, 59, 59))
-        return self.session.query(self.get_type()).filter(and_(EventEntity.date_start >= start, EventEntity.date_end <= end_datetime))
+        return self.session.query(self.get_type()).filter(and_(EventEntity.loose == False, and_(EventEntity.date_start >= start, EventEntity.date_end <= end_datetime)))
 
-    def get_start_date_between(self, start: datetime, end: datetime):
-        return self.session.query(self.get_type()).filter(and_(EventEntity.date_start >= start, EventEntity.date_start <= end))
+    def get_not_loose_start_date_between(self, start: datetime, end: datetime):
+        return self.session.query(self.get_type()).filter(and_(EventEntity.loose == False, and_(EventEntity.date_start >= start, EventEntity.date_start <= end)))
+
+    def get_loose(self):
+        return self.session.query(self.get_type()).filter(EventEntity.loose == True)
 
     def update(self, new_event: EventEntity):
         event = self.get(new_event.id)

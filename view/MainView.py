@@ -6,6 +6,7 @@ from view.CalendarObserverInterface import CalendarObserverInterface
 import tkinter as tk
 
 from view.ControlViewFrame import ControlViewFrame
+from view.EventsListFrame import EventsListFrame
 from view.MainViewInterface import MainViewInterface
 from view.WeekViewFrame import WeekViewFrame
 
@@ -16,8 +17,8 @@ WINDOW_SIZE = "1600x900"
 class MainView(CalendarObserverInterface, MainViewInterface):
 
     controller: MainControllerInterface
-
     root: tk.Tk
+
     def __init__(self, controller):
         self.controller = controller
 
@@ -34,6 +35,9 @@ class MainView(CalendarObserverInterface, MainViewInterface):
         self.week_frame = WeekViewFrame(self.root, self.controller)
         self.week_frame.grid(column=1, row=0, sticky='nsew')
 
+        self.events_frame = EventsListFrame(self.root, self.controller)
+        self.events_frame.grid(column=1, row=1, sticky='nsew')
+
         self.root.update()
 
     def start(self):
@@ -42,6 +46,7 @@ class MainView(CalendarObserverInterface, MainViewInterface):
 
     def update_calendar(self, calendar: CalendarEntity):
         self.week_frame.update_view(calendar)
+        self.events_frame.update_view(calendar)
 
     def get_top_level(self, title):
         self.top = tk.Toplevel()

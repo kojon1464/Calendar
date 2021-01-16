@@ -4,6 +4,7 @@ from typing import List
 
 from data.CalendarEntity import CalendarEntity
 from data.EventEntity import EventEntity
+from data.Priority import Priority
 from model.CalendarProviderInterface import CalendarProviderInterface
 from model.ModelInterface import ModelInterface
 from model.ObjectDetailsDTO import ObjectDetailsDTO
@@ -50,7 +51,8 @@ class Model(CalendarProviderInterface, ObjectDetailsProviderInterface, ModelInte
     def update_calendar(self):
         week = self.get_week(self.calendar.date)
         self.calendar.week = week
-        self.calendar.events = set(self.event_repository.get_events_between_dates(week[0], week[6]))
+        self.calendar.events = set(self.event_repository.get_not_loose_between_dates(week[0], week[6]))
+        self.calendar.events_loose = set(self.event_repository.get_loose())
 
         self.notify_calendar()
 
@@ -93,7 +95,7 @@ class Model(CalendarProviderInterface, ObjectDetailsProviderInterface, ModelInte
     def get_events_to_notify(self) -> List[EventEntity]:
         now = datetime.now()
         in_5_min = now + timedelta(minutes=MINUTES_NOTIFICATION_BEFORE)
-        events = self.event_repository.get_start_date_between(now, in_5_min)
+        events = self.event_repository.get_not_loose_start_date_between(now, in_5_min)
         to_notify = []
 
         for event in events:

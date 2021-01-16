@@ -9,6 +9,7 @@ class CalendarEntity:
     date: datetime.date
     week: List[datetime.datetime]
     events: Set[EventEntity]
+    events_loose: Set[EventEntity]
 
     def __init__(self):
         pass

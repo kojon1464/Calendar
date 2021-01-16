@@ -1,5 +1,6 @@
 import tkinter as tk
 from abc import ABC, abstractmethod
+from tkinter.messagebox import showerror
 
 from controller.MainControllerInterface import MainControllerInterface
 from data.EventEntity import EventEntity
@@ -17,16 +18,26 @@ class AbstractEventDetailsFrame(tk.Frame, ObjectDetailsObserverInterface, ABC):
         tk.Frame.__init__(self, parent)
 
     def create_button(self):
-        self.create_btn = tk.Button(self, text='Create', command=lambda: self.controller.create_event(self.get_event()))
+        self.create_btn = tk.Button(self, text='Create', command=lambda: self.validate_before_call(self.controller.create_event))
         self.create_btn.pack()
 
     def update_button(self):
-        self.update_btn = tk.Button(self, text='Update', command=lambda: self.controller.update_event(self.get_event()))
+        self.update_btn = tk.Button(self, text='Update', command=lambda: self.validate_before_call(self.controller.update_event))
         self.update_btn.pack()
 
     def delete_button(self):
         self.delete_btn = tk.Button(self, text='Delete', command=lambda: self.controller.delete_event(self.get_event()))
         self.delete_btn.pack()
+
+    def validate_before_call(self, callback):
+        event = self.get_event()
+        error = event.validate()
+        if error is None:
+            callback(event)
+        else:
+            showerror(title='Validation Error', message=error)
+
+
 
     @abstractmethod
     def get_event(self) -> EventEntity:

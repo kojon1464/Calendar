@@ -1,9 +1,11 @@
 import datetime
 import uuid
 
-from sqlalchemy import Column, Integer, String, DateTime
+from sqlalchemy import Column, Integer, String, DateTime, Boolean, Enum, Interval
 
 from base import Base
+from data.DayTime import DayTime
+from data.Priority import Priority
 
 
 class EventEntity(Base):
@@ -12,13 +14,35 @@ class EventEntity(Base):
     id = Column(Integer, primary_key=True)
     uid = Column(String)
     name = Column(String)
+    loose = Column(Boolean)
     date_start = Column(DateTime)
     date_end = Column(DateTime)
+    priority = Column(Enum(Priority))
+    day_time = Column(Enum(DayTime))
+    time_window = Column(Boolean)
+    time_before = Column(Interval)
+    time_after = Column(Interval)
 
-    def __init__(self, name, date_start, date_end, uid=None):
+    def __init__(self
+                 , name
+                 , date_start
+                 , date_end
+                 , loose=False
+                 , priority=Priority.UNDEFINED
+                 , day_time=DayTime.UNDEFINED
+                 , time_window=False
+                 , time_before=datetime.timedelta()
+                 , time_after=datetime.timedelta()
+                 , uid=None):
         self.name = name
         self.date_start = date_start
         self.date_end = date_end
+        self.loose = loose
+        self.priority = priority
+        self.day_time = day_time
+        self.time_window = time_window
+        self.time_before = time_before
+        self.time_after = time_after
 
         if uid is None:
             self.uid = uuid.uuid1().__str__()
@@ -29,6 +53,20 @@ class EventEntity(Base):
         return self.date_start.time().strftime('%H:%M') + '-' + self.date_end.time().strftime('%H:%M')
 
     def copy_from(self, event):
+        self.uid = event.uid
         self.name = event.name
         self.date_start = event.date_start
         self.date_end = event.date_end
+        self.loose = event.loose
+        self.priority = event.priority
+        self.day_time = event.day_time
+        self.time_window = event.time_window
+        self.time_before = event.time_before
+        self.time_after = event.time_after
+
+    def validate(self):
+        if self.date_start >= self.date_end:
+            return 'Start time cannot be after end time'
+        if self.name == '':
+            return 'Name cannot be empty'
+        return None
