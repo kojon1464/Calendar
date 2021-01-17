@@ -51,6 +51,7 @@ class MainView(CalendarObserverInterface, MainViewInterface):
     def get_top_level(self, title):
         self.top = tk.Toplevel()
         self.top.title(title)
+        self.top.resizable(False, False)
         self.top.grab_set()
         return self.top
 

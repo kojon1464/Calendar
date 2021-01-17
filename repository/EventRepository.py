@@ -1,4 +1,5 @@
 from datetime import datetime, time
+from typing import List
 
 from sqlalchemy import and_
 
@@ -17,6 +18,12 @@ class EventRepository(AbstractRepository):
 
     def get_not_loose_start_date_between(self, start: datetime, end: datetime):
         return self.session.query(self.get_type()).filter(and_(EventEntity.loose == False, and_(EventEntity.date_start >= start, EventEntity.date_start <= end)))
+
+    def get_by_uids(self, uids: List[str]):
+        return self.session.query(self.get_type()).filter(EventEntity.uid.in_(uids)).all()
+
+    def commit_changes(self):
+        self.session.commit()
 
     def get_loose(self):
         return self.session.query(self.get_type()).filter(EventEntity.loose == True)

@@ -1,9 +1,12 @@
+from tkinter.messagebox import askquestion, showerror
 
 from controller.MainControllerInterface import MainControllerInterface
 from data.EventEntity import EventEntity
 from model.Model import Model
 from view.AbstractEventDetailsFrame import AbstractEventDetailsFrame
 from view.EventDetailsFrame import EventDetailsFrame
+from view.ExportFileChooserFrame import ExportFileChooserFrame
+from view.ImportFileChooserFrame import ImportFileChooserFrame
 from view.MainViewInterface import MainViewInterface
 from plyer.utils import platform
 from plyer import notification
@@ -73,3 +76,21 @@ class MainController(MainControllerInterface):
                 app_name='Calendar',
                 # app_icon='path/to/the/icon.' + ('ico' if platform == 'win' else 'png')
             )
+
+    def import_clicked(self):
+        self.top_view = self.view.get_top_level("Import Calendar")
+        frame = ImportFileChooserFrame(self.top_view, self)
+        frame.pack()
+
+    def export_clicked(self):
+        self.top_view = self.view.get_top_level("Export Calendar")
+        frame = ExportFileChooserFrame(self.top_view, self)
+        frame.pack()
+
+    def export_calendar(self, path):
+        self.model.export_calendar(path)
+        self.top_view.destroy()
+
+    def import_calendar(self, path):
+        self.model.import_calendar(path)
+        self.top_view.destroy()

@@ -37,3 +37,11 @@ class ModelInterface(ABC):
     @abstractmethod
     def get_events_to_notify(self) -> List[EventEntity]:
         pass
+
+    @abstractmethod
+    def export_calendar(self, path: str):
+        pass
+
+    @abstractmethod
+    def import_calendar(self, path: str):
+        pass

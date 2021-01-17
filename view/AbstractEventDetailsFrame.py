@@ -37,8 +37,6 @@ class AbstractEventDetailsFrame(tk.Frame, ObjectDetailsObserverInterface, ABC):
         else:
             showerror(title='Validation Error', message=error)
 
-
-
     @abstractmethod
     def get_event(self) -> EventEntity:
         pass

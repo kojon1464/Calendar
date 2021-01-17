@@ -20,3 +20,9 @@ class ControlViewFrame(tk.Frame):
 
         self.create = tk.Button(self, text='create_event', command=lambda: controller.create_event_clicked())
         self.create.pack()
+
+        self.export = tk.Button(self, text='export_file', command=lambda: controller.export_clicked())
+        self.export.pack()
+
+        self.import_btn = tk.Button(self, text='import_file', command=lambda: controller.import_clicked())
+        self.import_btn.pack()

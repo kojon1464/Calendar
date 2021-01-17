@@ -37,3 +37,19 @@ class MainControllerInterface(ABC):
     @abstractmethod
     def check_notification(self):
         pass
+
+    @abstractmethod
+    def import_clicked(self):
+        pass
+
+    @abstractmethod
+    def export_clicked(self):
+        pass
+
+    @abstractmethod
+    def export_calendar(self, path):
+        pass
+
+    @abstractmethod
+    def import_calendar(self, path):
+        pass

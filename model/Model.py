@@ -1,3 +1,4 @@
+import os
 from calendar import Calendar
 from datetime import datetime, time, date, timedelta
 from typing import List
@@ -6,6 +7,7 @@ from data.CalendarEntity import CalendarEntity
 from data.EventEntity import EventEntity
 from data.Priority import Priority
 from model.CalendarProviderInterface import CalendarProviderInterface
+from model.IcsUtil import export_file, import_file
 from model.ModelInterface import ModelInterface
 from model.ObjectDetailsDTO import ObjectDetailsDTO
 from model.ObjectDetailsProviderInterface import ObjectDetailsProviderInterface
@@ -13,10 +15,11 @@ from repository.EventRepository import EventRepository
 from view.CalendarObserverInterface import CalendarObserverInterface
 from view.ObjectDetailsObserverInterface import ObjectDetailsObserverInterface
 
-
 MINUTES_NOTIFICATION_BEFORE = 5
 
+
 class Model(CalendarProviderInterface, ObjectDetailsProviderInterface, ModelInterface):
+
 
     notified: List[int]
     calendar: CalendarEntity
@@ -29,9 +32,12 @@ class Model(CalendarProviderInterface, ObjectDetailsProviderInterface, ModelInte
         self.notified = []
         self.event_repository = EventRepository()
 
-        event = EventEntity('test', datetime.combine(datetime.now().date(), time(8)), datetime.combine(datetime.now().date(), time(18)))
-        event1 = EventEntity('test1', datetime.combine(datetime.now().date(), time(10)), datetime.combine(datetime.now().date(), time(12)))
-        event2 = EventEntity('test2', datetime.combine(datetime.now().date(), time(11)), datetime.combine(datetime.now().date(), time(18)))
+        event = EventEntity('test', datetime.combine(datetime.now().date(), time(8)),
+                            datetime.combine(datetime.now().date(), time(18)))
+        event1 = EventEntity('test1', datetime.combine(datetime.now().date(), time(10)),
+                             datetime.combine(datetime.now().date(), time(12)))
+        event2 = EventEntity('test2', datetime.combine(datetime.now().date(), time(11)),
+                             datetime.combine(datetime.now().date(), time(18)))
         event3 = EventEntity('test3', datetime.combine(datetime.now().date(), time(15)),
                              datetime.combine(datetime.now().date(), time(20)))
 
@@ -105,6 +111,31 @@ class Model(CalendarProviderInterface, ObjectDetailsProviderInterface, ModelInte
 
         return to_notify
 
+    def export_calendar(self, path: str):
+        events = self.event_repository.get_all()
+        export_file(events, path)
+
+    def import_calendar(self, path: str):
+        events = import_file(path)
+        self.save_events_by_uid(events)
+        self.update_calendar()
+
+    def save_events_by_uid(self, events: List[EventEntity]):
+        uids = [event.uid for event in events]
+        new: List[EventEntity] = []
+        dictionary = {e.uid: e for e in self.event_repository.get_by_uids(uids)}
+
+        for event in events:
+            if event.uid in dictionary:
+                dictionary[event.uid].copy_from(event)
+            else:
+                new.append(event)
+
+        self.event_repository.commit_changes()
+
+        for event in new:
+            self.event_repository.save(event)
+
 
     # region CalendarProviderInterface
     def subscribe_calendar(self, observer: CalendarObserverInterface):
@@ -117,6 +148,7 @@ class Model(CalendarProviderInterface, ObjectDetailsProviderInterface, ModelInte
     def notify_calendar(self):
         for observer in self.calendar_observers:
             observer.update_calendar(self.calendar)
+
     # endregion
 
     # region ObjectDetailsProviderInterface

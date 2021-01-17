@@ -1,5 +1,5 @@
-import datetime
 import uuid
+from datetime import datetime, timedelta, time
 
 from sqlalchemy import Column, Integer, String, DateTime, Boolean, Enum, Interval
 
@@ -31,8 +31,8 @@ class EventEntity(Base):
                  , priority=Priority.UNDEFINED
                  , day_time=DayTime.UNDEFINED
                  , time_window=False
-                 , time_before=datetime.timedelta()
-                 , time_after=datetime.timedelta()
+                 , time_before=timedelta()
+                 , time_after=timedelta()
                  , uid=None):
         self.name = name
         self.date_start = date_start
@@ -69,4 +69,8 @@ class EventEntity(Base):
             return 'Start time cannot be after end time'
         if self.name == '':
             return 'Name cannot be empty'
+        if self.date_start - self.time_before < datetime.combine(self.date_start.date(), time()):
+            return 'Time window cannot stretch to other day'
+        if self.date_end + self.time_after > datetime.combine(self.date_start.date(), time(23, 59)):
+            return 'Time window cannot stretch to other day'
         return None
