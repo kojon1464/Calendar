@@ -6,11 +6,14 @@ from typing import List
 from data.CalendarEntity import CalendarEntity
 from data.EventEntity import EventEntity
 from data.Priority import Priority
+from data.Statistics import Statistics
 from model.CalendarProviderInterface import CalendarProviderInterface
 from model.IcsUtil import export_file, import_file
 from model.ModelInterface import ModelInterface
 from model.ObjectDetailsDTO import ObjectDetailsDTO
 from model.ObjectDetailsProviderInterface import ObjectDetailsProviderInterface
+from model.StatisticsUtils import get_weekday_distribution, get_priority_distribution, \
+    get_daytime_preferred_distribution
 from repository.EventRepository import EventRepository
 from view.CalendarObserverInterface import CalendarObserverInterface
 from view.ObjectDetailsObserverInterface import ObjectDetailsObserverInterface
@@ -136,6 +139,19 @@ class Model(CalendarProviderInterface, ObjectDetailsProviderInterface, ModelInte
         for event in new:
             self.event_repository.save(event)
 
+    def get_statistics(self) -> List[Statistics]:
+        statistics = []
+
+        events_not_loose = self.event_repository.get_not_loose()
+        statistics.append(get_weekday_distribution(events_not_loose))
+
+        events = self.event_repository.get_all()
+        statistics.append(get_priority_distribution(events))
+
+        statistics.append(get_daytime_preferred_distribution(events))
+
+        return statistics
+
 
     # region CalendarProviderInterface
     def subscribe_calendar(self, observer: CalendarObserverInterface):
@@ -161,5 +177,5 @@ class Model(CalendarProviderInterface, ObjectDetailsProviderInterface, ModelInte
 
     def notify_details(self):
         for observer in self.object_details_observers:
-            observer.update_calendar(self.object_details)
+            observer.update_details(self.object_details)
     # endregion

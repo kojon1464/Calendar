@@ -26,3 +26,9 @@ class ControlViewFrame(tk.Frame):
 
         self.import_btn = tk.Button(self, text='import_file', command=lambda: controller.import_clicked())
         self.import_btn.pack()
+
+        self.statistics = tk.Button(self, text='statistics', command=lambda: controller.statistics_clicked())
+        self.statistics.pack()
+
+        self.organize = tk.Button(self, text='organize', command=lambda: controller.organize_clicked())
+        self.organize.pack()

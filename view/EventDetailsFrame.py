@@ -26,6 +26,9 @@ class EventDetailsFrame(AbstractEventDetailsFrame):
         self.name = tk.StringVar()
         tk.Entry(self, text=self.name).pack()
 
+        self.description = tk.Text(self, width=40, height=7)
+        self.description.pack()
+
         self.loose = tk.BooleanVar()
         tk.Checkbutton(self, text="Lose event (time frame not set)", variable=self.loose, command=self.looseness_changed).pack()
 
@@ -118,7 +121,7 @@ class EventDetailsFrame(AbstractEventDetailsFrame):
         return (delta.seconds//60)%60
     # endregion
 
-    def update_calendar(self, details_dto: ObjectDetailsDTO):
+    def update_details(self, details_dto: ObjectDetailsDTO):
         event = details_dto.event
         if event is None:
             return
@@ -130,6 +133,7 @@ class EventDetailsFrame(AbstractEventDetailsFrame):
         self.date.set_date(event.date_start.date())
         self.set_start_time(event.date_start.time())
         self.set_end_time(event.date_end.time())
+        self.description.insert(1.0, event.description)
         self.loose.set(event.loose)
         self.priority.set(event.priority.name)
         self.day_time.set(event.day_time.name.replace('_', ' '))
@@ -144,6 +148,7 @@ class EventDetailsFrame(AbstractEventDetailsFrame):
         event = EventEntity(self.name.get()
                             , self.get_start_datetime()
                             , self.get_end_datetime()
+                            , self.description.get(1.0, tk.END)
                             , self.loose.get()
                             , Priority[self.priority.get()]
                             , DayTime[self.day_time.get().replace(' ', '_')]

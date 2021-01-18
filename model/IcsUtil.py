@@ -14,6 +14,7 @@ def export_file(events: List[EventEntity], file_path: str):
     for event in events:
         e = Event()
         e.name = event.name
+        e.description = event.description
         e.begin = event.date_start
         e.end = event.date_end
         e.uid = event.uid
@@ -37,7 +38,7 @@ def import_file(file_path: str) -> List[EventEntity]:
         c = Calendar(text)
         my_events: List[EventEntity] = []
         for event in c.events:
-            my_event = EventEntity(event.name, event.begin.datetime, event.end.datetime)
+            my_event = EventEntity(event.name, event.begin.datetime, event.end.datetime, event.description)
             my_event.uid = event.uid
             parse_extras(my_event, event)
             my_events.append(my_event)

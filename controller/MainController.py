@@ -1,7 +1,13 @@
+from datetime import date, time
 from tkinter.messagebox import askquestion, showerror
+from typing import List
+
+from pandas import DataFrame
 
 from controller.MainControllerInterface import MainControllerInterface
 from data.EventEntity import EventEntity
+from data.OrganizationStrategy import OrganizationStrategy
+from data.Statistics import Statistics
 from model.Model import Model
 from view.AbstractEventDetailsFrame import AbstractEventDetailsFrame
 from view.EventDetailsFrame import EventDetailsFrame
@@ -10,6 +16,9 @@ from view.ImportFileChooserFrame import ImportFileChooserFrame
 from view.MainViewInterface import MainViewInterface
 from plyer.utils import platform
 from plyer import notification
+
+from view.StatisticsViewFrame import StatisticsViewFrame
+from view.StrategyChooserViewFrame import StrategyChooserViewFrame
 
 
 class MainController(MainControllerInterface):
@@ -55,6 +64,13 @@ class MainController(MainControllerInterface):
             self.model.unsubscribe_details(frame)
         return destroy
 
+    def on_calendar_subscriber_close(self, frame):
+        def destroy(event):
+            if not event.widget is event.widget.winfo_toplevel():
+                return  # not actually the window
+            self.model.unsubscribe_calendar(frame)
+        return destroy
+
     def create_event(self, event: EventEntity):
         self.model.add_event(event)
         self.top_view.destroy()
@@ -94,3 +110,29 @@ class MainController(MainControllerInterface):
     def import_calendar(self, path):
         self.model.import_calendar(path)
         self.top_view.destroy()
+
+    def statistics_clicked(self):
+        self.top_view = self.view.get_top_level("Import Calendar")
+        frame = StatisticsViewFrame(self.top_view, self)
+        frame.pack()
+
+        frame.set_statistics(self.model.get_statistics())
+
+    def organize_clicked(self):
+        self.top_view = self.view.get_top_level("Organize loose events")
+
+        frame = StrategyChooserViewFrame(self.top_view, self)
+        frame.pack()
+
+        self.top_view.bind('<Destroy>', self.on_calendar_subscriber_close(frame))
+        self.model.subscribe_calendar(frame)
+        self.model.notify_calendar()
+
+    def organize_events(self,
+                        event_ids: List[int],
+                        date_start: date,
+                        date_end: date,
+                        time_start: time,
+                        time_end: time,
+                        strategy: OrganizationStrategy):
+        pass

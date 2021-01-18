@@ -6,5 +6,5 @@ from model.ObjectDetailsDTO import ObjectDetailsDTO
 class ObjectDetailsObserverInterface(ABC):
 
     @abstractmethod
-    def update_calendar(self, calendar: ObjectDetailsDTO):
+    def update_details(self, calendar: ObjectDetailsDTO):
         pass

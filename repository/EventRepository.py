@@ -28,6 +28,9 @@ class EventRepository(AbstractRepository):
     def get_loose(self):
         return self.session.query(self.get_type()).filter(EventEntity.loose == True)
 
+    def get_not_loose(self):
+        return self.session.query(self.get_type()).filter(EventEntity.loose == False).all()
+
     def update(self, new_event: EventEntity):
         event = self.get(new_event.id)
         event.copy_from(new_event)

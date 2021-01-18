@@ -2,6 +2,7 @@ from abc import ABC, abstractmethod
 from typing import List
 
 from data.EventEntity import EventEntity
+from data.Statistics import Statistics
 
 
 class ModelInterface(ABC):
@@ -44,4 +45,8 @@ class ModelInterface(ABC):
 
     @abstractmethod
     def import_calendar(self, path: str):
+        pass
+
+    @abstractmethod
+    def get_statistics(self) -> List[Statistics]:
         pass

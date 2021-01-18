@@ -1,3 +1,4 @@
+import re
 import uuid
 from datetime import datetime, timedelta, time
 
@@ -14,6 +15,7 @@ class EventEntity(Base):
     id = Column(Integer, primary_key=True)
     uid = Column(String)
     name = Column(String)
+    description = Column(String)
     loose = Column(Boolean)
     date_start = Column(DateTime)
     date_end = Column(DateTime)
@@ -27,6 +29,7 @@ class EventEntity(Base):
                  , name
                  , date_start
                  , date_end
+                 , description = ''
                  , loose=False
                  , priority=Priority.UNDEFINED
                  , day_time=DayTime.UNDEFINED
@@ -37,6 +40,7 @@ class EventEntity(Base):
         self.name = name
         self.date_start = date_start
         self.date_end = date_end
+        self.description = description
         self.loose = loose
         self.priority = priority
         self.day_time = day_time
@@ -52,11 +56,16 @@ class EventEntity(Base):
     def get_time_label(self) -> str:
         return self.date_start.time().strftime('%H:%M') + '-' + self.date_end.time().strftime('%H:%M')
 
+    def get_single_line_description(self) -> str:
+        return re.sub(r'\s+', ' ', self.description)
+
+
     def copy_from(self, event):
         self.uid = event.uid
         self.name = event.name
         self.date_start = event.date_start
         self.date_end = event.date_end
+        self.description = event.description
         self.loose = event.loose
         self.priority = event.priority
         self.day_time = event.day_time
