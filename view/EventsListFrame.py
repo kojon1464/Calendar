@@ -28,17 +28,19 @@ class EventsListFrame(tk.Frame, EventsViewInterface, EventsListInterface):
         self.create_heading()
 
     def create_columns(self):
-        self.tree['columns'] = ('name', 'description', 'priority', 'day_time')
+        self.tree['columns'] = ('name', 'description', 'duration', 'priority', 'day_time')
         self.tree.column('#0', width=0, stretch=tk.NO)
 
         self.tree.column('name', width=200, minwidth=150)
         self.tree.column('description', width=400, minwidth=200)
+        self.tree.column('duration', width=150, minwidth=100)
         self.tree.column('priority', width=150, minwidth=100)
         self.tree.column('day_time', width=150, minwidth=100)
 
     def create_heading(self):
         self.tree.heading('name', text='Name', anchor=tk.W)
         self.tree.heading('description', text='Description', anchor=tk.W)
+        self.tree.heading('duration', text='Duration', anchor=tk.W)
         self.tree.heading('priority', text='Priority', anchor=tk.W)
         self.tree.heading('day_time', text='Time of the Day', anchor=tk.W)
 
@@ -50,6 +52,7 @@ class EventsListFrame(tk.Frame, EventsViewInterface, EventsListInterface):
     def insert_event(self, event: EventEntity):
         self.tree.insert('', 'end', text=event.id, values=(event.name
                                                            , event.get_single_line_description()
+                                                           , event.duration
                                                            , event.priority.name
                                                            , event.day_time.name.replace('_', ' ')))
 
@@ -66,4 +69,10 @@ class EventsListFrame(tk.Frame, EventsViewInterface, EventsListInterface):
         self.tree.unbind('<Double-1>')
 
     def get_selected_ids(self) -> List[int]:
-        return list(self.tree.selection())
+        selection = list(self.tree.selection())
+        events_ids = []
+        for item_id in selection:
+            item = self.tree.item(item_id)
+            events_ids.append(item['text'])
+
+        return events_ids

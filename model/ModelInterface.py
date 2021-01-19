@@ -1,8 +1,11 @@
 from abc import ABC, abstractmethod
+from datetime import date, time
 from typing import List
 
 from data.EventEntity import EventEntity
+from data.OrganizationStrategy import OrganizationStrategy
 from data.Statistics import Statistics
+from model.OrganizeStrategyInterface import OrganizeStrategyInterface
 
 
 class ModelInterface(ABC):
@@ -17,6 +20,10 @@ class ModelInterface(ABC):
 
     @abstractmethod
     def change_to_previous_week(self):
+        pass
+
+    @abstractmethod
+    def change_week_by_date(self, date: date):
         pass
 
     @abstractmethod
@@ -49,4 +56,17 @@ class ModelInterface(ABC):
 
     @abstractmethod
     def get_statistics(self) -> List[Statistics]:
+        pass
+
+    @abstractmethod
+    def organize_events(self,
+                        event_ids: List[int],
+                        date_start: date,
+                        date_end: date,
+                        time_start: time,
+                        time_end: time):
+        pass
+
+    @abstractmethod
+    def set_organize_strategy(self, strategy_instance: OrganizeStrategyInterface):
         pass

@@ -2,11 +2,11 @@ from enum import Enum
 
 
 class Priority(Enum):
-    UNDEFINED = 0,
-    EMERGENCY = 1,
-    URGENT = 2,
-    HIGH = 3,
-    MEDIUM = 4,
-    STANDARD = 5,
-    LOW = 8,
-    LOWEST = 9
+    UNDEFINED = 9,
+    EMERGENCY = 0,
+    URGENT = 1,
+    HIGH = 2,
+    MEDIUM = 3,
+    STANDARD = 4,
+    LOW = 5,
+    LOWEST = 6

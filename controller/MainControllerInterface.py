@@ -18,6 +18,10 @@ class MainControllerInterface(ABC):
         pass
 
     @abstractmethod
+    def calendar_date_chosen(self, date: str):
+        pass
+
+    @abstractmethod
     def create_event_clicked(self):
         pass
 

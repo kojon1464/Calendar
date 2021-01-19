@@ -5,6 +5,7 @@ from typing import List
 
 from data.CalendarEntity import CalendarEntity
 from data.EventEntity import EventEntity
+from data.OrganizationStrategy import OrganizationStrategy
 from data.Priority import Priority
 from data.Statistics import Statistics
 from model.CalendarProviderInterface import CalendarProviderInterface
@@ -12,6 +13,7 @@ from model.IcsUtil import export_file, import_file
 from model.ModelInterface import ModelInterface
 from model.ObjectDetailsDTO import ObjectDetailsDTO
 from model.ObjectDetailsProviderInterface import ObjectDetailsProviderInterface
+from model.OrganizeStrategyInterface import OrganizeStrategyInterface
 from model.StatisticsUtils import get_weekday_distribution, get_priority_distribution, \
     get_daytime_preferred_distribution
 from repository.EventRepository import EventRepository
@@ -30,6 +32,7 @@ class Model(CalendarProviderInterface, ObjectDetailsProviderInterface, ModelInte
     calendar_observers: List[CalendarObserverInterface] = []
     object_details_observers: List[ObjectDetailsObserverInterface] = []
     event_repository: EventRepository
+    strategy_instance: OrganizeStrategyInterface
 
     def __init__(self):
         self.notified = []
@@ -52,6 +55,9 @@ class Model(CalendarProviderInterface, ObjectDetailsProviderInterface, ModelInte
     def initialize(self):
         self.calendar = CalendarEntity()
         self.set_calendar_for_date(datetime.now().date())
+
+    def change_week_by_date(self, date: date):
+        self.set_calendar_for_date(date)
 
     def set_calendar_for_date(self, date: datetime.date):
         self.calendar.date = date
@@ -152,6 +158,22 @@ class Model(CalendarProviderInterface, ObjectDetailsProviderInterface, ModelInte
 
         return statistics
 
+    def organize_events(self,
+                        event_ids: List[int],
+                        date_start: date,
+                        date_end: date,
+                        time_start: time,
+                        time_end: time):
+        self.strategy_instance.organize_events(self.event_repository.get_multiple(event_ids),
+                                               date_start,
+                                               date_end,
+                                               time_start,
+                                               time_end)
+        self.update_calendar()
+
+    def set_organize_strategy(self, strategy_instance: OrganizeStrategyInterface):
+        self.strategy_instance = strategy_instance
+        self.strategy_instance.set_event_repository(self.event_repository)
 
     # region CalendarProviderInterface
     def subscribe_calendar(self, observer: CalendarObserverInterface):

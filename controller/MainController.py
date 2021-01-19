@@ -1,6 +1,7 @@
-from datetime import date, time
+from datetime import date, time, datetime
 from tkinter.messagebox import askquestion, showerror
 from typing import List
+import tkinter as tk
 
 from pandas import DataFrame
 
@@ -39,6 +40,10 @@ class MainController(MainControllerInterface):
     def next_week_clicked(self):
         self.model.change_to_next_week()
 
+    def calendar_date_chosen(self, date_str: str):
+
+        self.model.set_calendar_for_date(datetime.strptime(date_str, '%m/%d/%y').date())
+
     def create_event_clicked(self):
         self.top_view = self.view.get_top_level("Create Event")
         frame: AbstractEventDetailsFrame = EventDetailsFrame(self.top_view, self)
@@ -51,7 +56,7 @@ class MainController(MainControllerInterface):
         frame: AbstractEventDetailsFrame = EventDetailsFrame(self.top_view, self)
         frame.update_button()
         frame.delete_button()
-        frame.pack()
+        frame.pack(expand=True, fill=tk.BOTH)
 
         self.top_view.bind('<Destroy>', self.on_details_subscriber_close(frame))
         self.model.subscribe_details(frame)
@@ -135,4 +140,6 @@ class MainController(MainControllerInterface):
                         time_start: time,
                         time_end: time,
                         strategy: OrganizationStrategy):
-        pass
+        self.model.set_organize_strategy(strategy.value[0]())
+        self.model.organize_events(event_ids, date_start, date_end, time_start, time_end)
+        self.top_view.destroy()

@@ -17,17 +17,19 @@ class AbstractEventDetailsFrame(tk.Frame, ObjectDetailsObserverInterface, ABC):
         self.parent = parent
         tk.Frame.__init__(self, parent)
 
+        self.button_frame = tk.Frame(self)
+
     def create_button(self):
-        self.create_btn = tk.Button(self, text='Create', command=lambda: self.validate_before_call(self.controller.create_event))
-        self.create_btn.pack()
+        self.create_btn = tk.Button(self.button_frame, text='Create', command=lambda: self.validate_before_call(self.controller.create_event))
+        self.create_btn.pack(side=tk.LEFT, padx=5)
 
     def update_button(self):
-        self.update_btn = tk.Button(self, text='Update', command=lambda: self.validate_before_call(self.controller.update_event))
-        self.update_btn.pack()
+        self.update_btn = tk.Button(self.button_frame, text='Update', command=lambda: self.validate_before_call(self.controller.update_event))
+        self.update_btn.pack(side=tk.LEFT, padx=5)
 
     def delete_button(self):
-        self.delete_btn = tk.Button(self, text='Delete', command=lambda: self.controller.delete_event(self.get_event()))
-        self.delete_btn.pack()
+        self.delete_btn = tk.Button(self.button_frame, text='Delete', command=lambda: self.controller.delete_event(self.get_event()))
+        self.delete_btn.pack(side=tk.LEFT, padx=5)
 
     def validate_before_call(self, callback):
         event = self.get_event()

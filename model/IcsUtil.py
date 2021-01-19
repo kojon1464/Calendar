@@ -18,6 +18,7 @@ def export_file(events: List[EventEntity], file_path: str):
         e.begin = event.date_start
         e.end = event.date_end
         e.uid = event.uid
+        e.duration = event.duration
 
         e.extra.append(ContentLine(name="LOOSE", value=event.loose))
         e.extra.append(ContentLine(name="PRIORITY", value=event.priority.name))
@@ -38,7 +39,7 @@ def import_file(file_path: str) -> List[EventEntity]:
         c = Calendar(text)
         my_events: List[EventEntity] = []
         for event in c.events:
-            my_event = EventEntity(event.name, event.begin.datetime, event.end.datetime, event.description)
+            my_event = EventEntity(event.name, event.begin.datetime, event.end.datetime, event.description, event.duration)
             my_event.uid = event.uid
             parse_extras(my_event, event)
             my_events.append(my_event)

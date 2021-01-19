@@ -105,7 +105,12 @@ class StrategyChooserViewFrame(tk.Frame, CalendarObserverInterface):
     def organize_clicked(self):
         error = self.validate_inputs()
         if error is None:
-            self.controller.organize_events()
+            self.controller.organize_events(self.event_list.get_selected_ids(),
+                                            self.date_start.get_date(),
+                                            self.date_end.get_date(),
+                                            self.get_start_time(),
+                                            self.get_end_time(),
+                                            OrganizationStrategy[self.strategy.get().upper()])
         else:
             showerror(title='Validation Error', message=error)
 

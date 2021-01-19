@@ -11,7 +11,7 @@ from view.MainViewInterface import MainViewInterface
 from view.WeekViewFrame import WeekViewFrame
 
 TITLE = "Calendar"
-WINDOW_SIZE = "1600x900"
+WINDOW_SIZE = "1700x900"
 
 
 class MainView(CalendarObserverInterface, MainViewInterface):
@@ -30,7 +30,7 @@ class MainView(CalendarObserverInterface, MainViewInterface):
         self.root.grid_columnconfigure(1, weight=1)
 
         self.control_frame = ControlViewFrame(self.root, self.controller)
-        self.control_frame.grid(column=0, row=0)
+        self.control_frame.grid(column=0, row=0, sticky='n')
 
         self.week_frame = WeekViewFrame(self.root, self.controller)
         self.week_frame.grid(column=1, row=0, sticky='nsew')

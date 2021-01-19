@@ -19,6 +19,7 @@ class EventEntity(Base):
     loose = Column(Boolean)
     date_start = Column(DateTime)
     date_end = Column(DateTime)
+    duration = Column(Integer)
     priority = Column(Enum(Priority))
     day_time = Column(Enum(DayTime))
     time_window = Column(Boolean)
@@ -26,10 +27,11 @@ class EventEntity(Base):
     time_after = Column(Interval)
 
     def __init__(self
-                 , name
-                 , date_start
-                 , date_end
-                 , description = ''
+                 , name=''
+                 , date_start=datetime.now()
+                 , date_end=datetime.now()
+                 , description=''
+                 , duration=0
                  , loose=False
                  , priority=Priority.UNDEFINED
                  , day_time=DayTime.UNDEFINED
@@ -40,6 +42,7 @@ class EventEntity(Base):
         self.name = name
         self.date_start = date_start
         self.date_end = date_end
+        self.duration = duration
         self.description = description
         self.loose = loose
         self.priority = priority
@@ -56,15 +59,27 @@ class EventEntity(Base):
     def get_time_label(self) -> str:
         return self.date_start.time().strftime('%H:%M') + '-' + self.date_end.time().strftime('%H:%M')
 
+    def get_delta_label(self) -> str:
+        date = datetime.now().date()
+
+        if self.time_window:
+            return (datetime.combine(date, time()) + self.time_before).strftime('-%H:%M') + \
+               '|' + \
+               (datetime.combine(date, time()) + self.time_after).strftime('+%H:%M')
+        else:
+            return ''
+
     def get_single_line_description(self) -> str:
         return re.sub(r'\s+', ' ', self.description)
 
 
     def copy_from(self, event):
+        self.id = event.id
         self.uid = event.uid
         self.name = event.name
         self.date_start = event.date_start
         self.date_end = event.date_end
+        self.duration = event.duration
         self.description = event.description
         self.loose = event.loose
         self.priority = event.priority
@@ -74,7 +89,7 @@ class EventEntity(Base):
         self.time_after = event.time_after
 
     def validate(self):
-        if self.date_start >= self.date_end:
+        if self.date_start > self.date_end:
             return 'Start time cannot be after end time'
         if self.name == '':
             return 'Name cannot be empty'
@@ -82,4 +97,6 @@ class EventEntity(Base):
             return 'Time window cannot stretch to other day'
         if self.date_end + self.time_after > datetime.combine(self.date_start.date(), time(23, 59)):
             return 'Time window cannot stretch to other day'
+        if self.duration < 0:
+            return 'Duration cannot be negative'
         return None

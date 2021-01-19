@@ -15,6 +15,8 @@ DAY_FILED_HEIGHT = 80
 EVENT_TAG = 'event'
 COLUMN_MARGIN = 7
 
+MIN_EVENT_HEIGHT = 65
+
 
 class Positions(Enum):
     LEFT = 'left'
@@ -64,7 +66,7 @@ class WeekViewFrame(tk.Frame, EventsViewInterface):
 
     def create_event(self, event: EventEntity, x0, y0, x1, y1, color: str, tag:str):
         width = x1 - x0
-        height = y1 - y0
+        height = max(y1 - y0, MIN_EVENT_HEIGHT)
         event_view = EventView(self.parent, event, color)
         event_view.bind_with_children('<Button-1>', lambda e: self.controller.update_event_clicked(event.id))
         self.canvas.create_window(x0, y0, width=width, height=height, window=event_view, anchor=tk.NW, tags=(tag, EVENT_TAG))
@@ -81,8 +83,8 @@ class WeekViewFrame(tk.Frame, EventsViewInterface):
 
         for event in events:
             size_of_minute = (self.winfo_height() - DAY_FILED_HEIGHT) / (24 * 60)
-            y0 = size_of_minute * self.tome_to_minutes(event.date_start.time())
-            y1 = size_of_minute * self.tome_to_minutes(event.date_end.time())
+            y0 = size_of_minute * self.tome_to_minutes(event.date_start.time()) + DAY_FILED_HEIGHT
+            y1 = size_of_minute * self.tome_to_minutes(event.date_end.time()) + DAY_FILED_HEIGHT
 
             self.create_event(event, x0, y0, x1, y1, 'red', EVENT_TAG + day_number.__str__())
 
@@ -93,7 +95,7 @@ class WeekViewFrame(tk.Frame, EventsViewInterface):
         segment_height = (self.winfo_height() - DAY_FILED_HEIGHT) / number_of_segments
 
         for i in range(0, number_of_segments):
-            overlapping = self.get_overlapping_events(x0, segment_height * i, x1, segment_height * (i + 1))
+            overlapping = self.get_overlapping_events(x0, segment_height * i + DAY_FILED_HEIGHT, x1, segment_height * (i + 1) + DAY_FILED_HEIGHT)
 
             for event in overlapping:
                 self.ensure_tag(event, len(overlapping).__str__())
