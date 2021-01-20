@@ -27,8 +27,8 @@ class ControlViewFrame(tk.Frame):
         self.calendar.bind('<<CalendarSelected>>', lambda e: self.controller.calendar_date_chosen(self.calendar.get_date()))
         self.calendar.grid(row=1, column=0, columnspan=2, sticky='we')
 
-        self.create = tk.Button(self, text='create_event', command=lambda: controller.create_event_clicked(), font=BUTTON_FONT)
-        self.create.grid(row=3, column=0, columnspan=2, sticky='we')
+        self.create = tk.Button(self, text='create event', command=lambda: controller.create_event_clicked(), font=BUTTON_FONT)
+        self.create.grid(row=2, column=0, columnspan=2, sticky='we')
 
         self.export = tk.Button(self, text='export file', command=lambda: controller.export_clicked(), font=BUTTON_FONT)
         self.export.grid(row=3, column=0, columnspan=2, sticky='we')

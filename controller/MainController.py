@@ -48,7 +48,7 @@ class MainController(MainControllerInterface):
         self.top_view = self.view.get_top_level("Create Event")
         frame: AbstractEventDetailsFrame = EventDetailsFrame(self.top_view, self)
         frame.create_button()
-        frame.pack()
+        frame.pack(expand=True, fill=tk.BOTH)
 
     def update_event_clicked(self, event_id):
         self.top_view = self.view.get_top_level("Create Event")

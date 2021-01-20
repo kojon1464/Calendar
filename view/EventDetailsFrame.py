@@ -15,7 +15,7 @@ HOURS = [item for item in range(0, 24)]
 MINUTES = [item for item in range(0, 60, 5)]
 DURATION = [item for item in range(0, 400, 15)]
 
-FRAME_SIZE = '400x460'
+FRAME_SIZE = '400x480'
 PAD_Y = 5
 
 class EventDetailsFrame(AbstractEventDetailsFrame):
@@ -70,6 +70,7 @@ class EventDetailsFrame(AbstractEventDetailsFrame):
 
         self.set_start_time(datetime.now().time())
         self.set_end_time(datetime.now().time())
+        self.time_window_changed()
 
     def init_delta(self):
         self.delta_frame = tk.Frame(self, highlightbackground="gray", highlightthickness=1)

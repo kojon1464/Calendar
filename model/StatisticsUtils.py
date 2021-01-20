@@ -41,6 +41,26 @@ def get_priority_distribution(events: List[EventEntity]) -> Statistics:
     return Statistics(df, "Priorities")
 
 
+def get_loose_windowed_distribution(events: List[EventEntity]) -> Statistics:
+    dictionary = {item: 0 for item in ['Neither', 'Loose', 'Time Windowed']}
+
+    for event in events:
+        if event.loose:
+            dictionary['Loose'] = dictionary['Loose'] + 1
+        if event.time_window:
+            dictionary['Time Windowed'] = dictionary['Time Windowed'] + 1
+        if not event.loose and not event.time_window:
+            dictionary['Neither'] = dictionary['Neither'] + 1
+
+    data = {'State': list(dictionary.keys()),
+             'Number_of_events': list(dictionary.values())
+             }
+    df = DataFrame(data, columns=['State', 'Number_of_events'])
+    df = df[['State', 'Number_of_events']].groupby('State', sort=False).sum()
+
+    return Statistics(df, "States of events")
+
+
 def get_daytime_preferred_distribution(events: List[EventEntity]) -> Statistics:
     daytime_dict = {daytime.name: 0 for daytime in list(DayTime)}
 

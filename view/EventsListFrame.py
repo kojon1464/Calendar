@@ -20,9 +20,14 @@ class EventsListFrame(tk.Frame, EventsViewInterface, EventsListInterface):
 
         tk.Frame.__init__(self, parent)
 
-        self.tree = ttk.Treeview(self)
+        self.scroll = tk.Scrollbar(self)
+        self.scroll.pack(side=tk.RIGHT, fill=tk.Y)
+
+        self.tree = ttk.Treeview(self, yscrollcommand=self.scroll.set)
         self.tree.pack(expand=True, fill=tk.BOTH)
         self.tree.bind('<Double-1>', self.on_double_click)
+
+        self.scroll.configure(command=self.tree.yview)
 
         self.create_columns()
         self.create_heading()

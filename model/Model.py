@@ -15,7 +15,7 @@ from model.ObjectDetailsDTO import ObjectDetailsDTO
 from model.ObjectDetailsProviderInterface import ObjectDetailsProviderInterface
 from model.OrganizeStrategyInterface import OrganizeStrategyInterface
 from model.StatisticsUtils import get_weekday_distribution, get_priority_distribution, \
-    get_daytime_preferred_distribution
+    get_daytime_preferred_distribution, get_loose_windowed_distribution
 from repository.EventRepository import EventRepository
 from view.CalendarObserverInterface import CalendarObserverInterface
 from view.ObjectDetailsObserverInterface import ObjectDetailsObserverInterface
@@ -155,6 +155,8 @@ class Model(CalendarProviderInterface, ObjectDetailsProviderInterface, ModelInte
         statistics.append(get_priority_distribution(events))
 
         statistics.append(get_daytime_preferred_distribution(events))
+
+        statistics.append(get_loose_windowed_distribution(events))
 
         return statistics
 
