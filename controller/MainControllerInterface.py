@@ -2,9 +2,8 @@ from abc import ABC, abstractmethod
 from datetime import date, time
 from typing import List
 
-from data.CalendarEntity import CalendarEntity
 from data.EventEntity import EventEntity
-from data.OrganizationStrategy import OrganizationStrategy
+from data.enums.OrganizationStrategy import OrganizationStrategy
 
 
 class MainControllerInterface(ABC):

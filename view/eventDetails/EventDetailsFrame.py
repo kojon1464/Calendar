@@ -5,11 +5,11 @@ from tkinter import ttk
 from tkcalendar import DateEntry
 
 from controller.MainControllerInterface import MainControllerInterface
-from data.DayTime import DayTime
+from data.enums.DayTime import DayTime
 from data.EventEntity import EventEntity
-from data.Priority import Priority
+from data.enums.Priority import Priority
 from model.ObjectDetailsDTO import ObjectDetailsDTO
-from view.AbstractEventDetailsFrame import AbstractEventDetailsFrame
+from view.eventDetails.AbstractEventDetailsFrame import AbstractEventDetailsFrame
 
 HOURS = [item for item in range(0, 24)]
 MINUTES = [item for item in range(0, 60, 5)]

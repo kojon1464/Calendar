@@ -1,24 +1,19 @@
 from datetime import date, time, datetime
-from tkinter.messagebox import askquestion, showerror
 from typing import List
 import tkinter as tk
 
-from pandas import DataFrame
-
 from controller.MainControllerInterface import MainControllerInterface
 from data.EventEntity import EventEntity
-from data.OrganizationStrategy import OrganizationStrategy
-from data.Statistics import Statistics
+from data.enums.OrganizationStrategy import OrganizationStrategy
 from model.Model import Model
-from view.AbstractEventDetailsFrame import AbstractEventDetailsFrame
-from view.EventDetailsFrame import EventDetailsFrame
-from view.ExportFileChooserFrame import ExportFileChooserFrame
-from view.ImportFileChooserFrame import ImportFileChooserFrame
+from view.eventDetails.AbstractEventDetailsFrame import AbstractEventDetailsFrame
+from view.eventDetails.EventDetailsFrame import EventDetailsFrame
+from view.fileChooser.ExportFileChooserFrame import ExportFileChooserFrame
+from view.fileChooser.ImportFileChooserFrame import ImportFileChooserFrame
 from view.MainViewInterface import MainViewInterface
-from plyer.utils import platform
 from plyer import notification
 
-from view.StatisticsViewFrame import StatisticsViewFrame
+from view.statistic.StatisticsViewFrame import StatisticsViewFrame
 from view.StrategyChooserViewFrame import StrategyChooserViewFrame
 
 

@@ -1,4 +1,3 @@
-from controller import MainController
 from controller.MainControllerInterface import MainControllerInterface
 from data.CalendarEntity import CalendarEntity
 from view.CalendarObserverInterface import CalendarObserverInterface
@@ -6,7 +5,7 @@ from view.CalendarObserverInterface import CalendarObserverInterface
 import tkinter as tk
 
 from view.ControlViewFrame import ControlViewFrame
-from view.EventsListFrame import EventsListFrame
+from view.eventList.EventsListFrame import EventsListFrame
 from view.MainViewInterface import MainViewInterface
 from view.WeekViewFrame import WeekViewFrame
 

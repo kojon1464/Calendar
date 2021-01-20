@@ -1,6 +1,6 @@
 from abc import ABC, abstractmethod
 
-from view.ObjectDetailsObserverInterface import ObjectDetailsObserverInterface
+from view.eventDetails.ObjectDetailsObserverInterface import ObjectDetailsObserverInterface
 
 
 class ObjectDetailsProviderInterface(ABC):

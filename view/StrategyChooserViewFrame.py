@@ -6,11 +6,11 @@ from tkcalendar import DateEntry
 
 from controller.MainControllerInterface import MainControllerInterface
 from data.CalendarEntity import CalendarEntity
-from data.OrganizationStrategy import OrganizationStrategy
+from data.enums.OrganizationStrategy import OrganizationStrategy
 from view.CalendarObserverInterface import CalendarObserverInterface
 import tkinter as tk
 
-from view.EventsListFrame import EventsListFrame
+from view.eventList.EventsListFrame import EventsListFrame
 
 HOURS = [item for item in range(0, 24)]
 MINUTES = [item for item in range(0, 60, 5)]

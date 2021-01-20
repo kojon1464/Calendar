@@ -1,12 +1,11 @@
 import tkinter as tk
-from abc import ABC
 from tkinter import ttk
-from typing import List, Set, re
+from typing import List, Set
 
 from controller.MainControllerInterface import MainControllerInterface
 from data.CalendarEntity import CalendarEntity
 from data.EventEntity import EventEntity
-from view.EventsListInterface import EventsListInterface
+from view.eventList.EventsListInterface import EventsListInterface
 from view.EventsViewInterface import EventsViewInterface
 
 

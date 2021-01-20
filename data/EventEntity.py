@@ -5,8 +5,8 @@ from datetime import datetime, timedelta, time
 from sqlalchemy import Column, Integer, String, DateTime, Boolean, Enum, Interval
 
 from base import Base
-from data.DayTime import DayTime
-from data.Priority import Priority
+from data.enums.DayTime import DayTime
+from data.enums.Priority import Priority
 
 
 class EventEntity(Base):
@@ -74,7 +74,8 @@ class EventEntity(Base):
 
 
     def copy_from(self, event):
-        self.id = event.id
+        if event.id is not None:
+            self.id = event.id
         self.uid = event.uid
         self.name = event.name
         self.date_start = event.date_start

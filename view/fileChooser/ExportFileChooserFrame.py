@@ -1,9 +1,8 @@
 import re
-import tkinter as tk
 from tkinter.filedialog import asksaveasfilename
 
 from controller.MainControllerInterface import MainControllerInterface
-from view.AbstractFileChooserFrame import AbstractFileChooserFrame
+from view.fileChooser.AbstractFileChooserFrame import AbstractFileChooserFrame
 
 FRAME_SIZE = '500x200'
 INFO_TEXT = 'Choose a file that calendar will be exported into. IMPORTANT: Loose events (events without specified time)' \

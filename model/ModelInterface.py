@@ -3,9 +3,8 @@ from datetime import date, time
 from typing import List
 
 from data.EventEntity import EventEntity
-from data.OrganizationStrategy import OrganizationStrategy
 from data.Statistics import Statistics
-from model.OrganizeStrategyInterface import OrganizeStrategyInterface
+from model.organize.OrganizeStrategyInterface import OrganizeStrategyInterface
 
 
 class ModelInterface(ABC):

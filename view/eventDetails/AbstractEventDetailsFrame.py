@@ -4,7 +4,7 @@ from tkinter.messagebox import showerror
 
 from controller.MainControllerInterface import MainControllerInterface
 from data.EventEntity import EventEntity
-from view.ObjectDetailsObserverInterface import ObjectDetailsObserverInterface
+from view.eventDetails.ObjectDetailsObserverInterface import ObjectDetailsObserverInterface
 
 
 class AbstractEventDetailsFrame(tk.Frame, ObjectDetailsObserverInterface, ABC):

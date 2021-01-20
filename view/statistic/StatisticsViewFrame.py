@@ -6,11 +6,12 @@ from pandas import DataFrame
 
 from controller.MainControllerInterface import MainControllerInterface
 from data.Statistics import Statistics
-from view.StatisticsViewInterface import StatisticsViewInterface
+from view.statistic.StatisticsViewInterface import StatisticsViewInterface
 
 FRAME_SIZE = '400x500'
 
 NUMBER_OF_COLUMNS = 2
+
 
 class StatisticsViewFrame(tk.Frame, StatisticsViewInterface):
 

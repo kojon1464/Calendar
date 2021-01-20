@@ -3,9 +3,9 @@ from typing import List
 
 from pandas import DataFrame
 
-from data.DayTime import DayTime
+from data.enums.DayTime import DayTime
 from data.EventEntity import EventEntity
-from data.Priority import Priority
+from data.enums.Priority import Priority
 from data.Statistics import Statistics
 
 

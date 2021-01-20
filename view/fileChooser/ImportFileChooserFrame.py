@@ -2,7 +2,7 @@ import re
 from tkinter.filedialog import askopenfilename
 
 from controller.MainControllerInterface import MainControllerInterface
-from view.AbstractFileChooserFrame import AbstractFileChooserFrame
+from view.fileChooser.AbstractFileChooserFrame import AbstractFileChooserFrame
 
 FRAME_SIZE = '500x200'
 INFO_TEXT = 'Choose a file that contains calendar data. IMPORTANT: Note that this application does not take all' \

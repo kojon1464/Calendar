@@ -1,24 +1,21 @@
-import os
 from calendar import Calendar
 from datetime import datetime, time, date, timedelta
 from typing import List
 
 from data.CalendarEntity import CalendarEntity
 from data.EventEntity import EventEntity
-from data.OrganizationStrategy import OrganizationStrategy
-from data.Priority import Priority
 from data.Statistics import Statistics
 from model.CalendarProviderInterface import CalendarProviderInterface
-from model.IcsUtil import export_file, import_file
+from model.util.IcsUtil import export_file, import_file
 from model.ModelInterface import ModelInterface
 from model.ObjectDetailsDTO import ObjectDetailsDTO
 from model.ObjectDetailsProviderInterface import ObjectDetailsProviderInterface
-from model.OrganizeStrategyInterface import OrganizeStrategyInterface
-from model.StatisticsUtils import get_weekday_distribution, get_priority_distribution, \
+from model.organize.OrganizeStrategyInterface import OrganizeStrategyInterface
+from model.util.StatisticsUtils import get_weekday_distribution, get_priority_distribution, \
     get_daytime_preferred_distribution, get_loose_windowed_distribution
 from repository.EventRepository import EventRepository
 from view.CalendarObserverInterface import CalendarObserverInterface
-from view.ObjectDetailsObserverInterface import ObjectDetailsObserverInterface
+from view.eventDetails.ObjectDetailsObserverInterface import ObjectDetailsObserverInterface
 
 MINUTES_NOTIFICATION_BEFORE = 5
 
@@ -38,19 +35,19 @@ class Model(CalendarProviderInterface, ObjectDetailsProviderInterface, ModelInte
         self.notified = []
         self.event_repository = EventRepository()
 
-        event = EventEntity('test', datetime.combine(datetime.now().date(), time(8)),
-                            datetime.combine(datetime.now().date(), time(18)))
-        event1 = EventEntity('test1', datetime.combine(datetime.now().date(), time(10)),
-                             datetime.combine(datetime.now().date(), time(12)))
-        event2 = EventEntity('test2', datetime.combine(datetime.now().date(), time(11)),
-                             datetime.combine(datetime.now().date(), time(18)))
-        event3 = EventEntity('test3', datetime.combine(datetime.now().date(), time(15)),
-                             datetime.combine(datetime.now().date(), time(20)))
-
-        self.event_repository.save(event)
-        self.event_repository.save(event1)
-        self.event_repository.save(event2)
-        self.event_repository.save(event3)
+        # event = EventEntity('test', datetime.combine(datetime.now().date(), time(8)),
+        #                     datetime.combine(datetime.now().date(), time(18)))
+        # event1 = EventEntity('test1', datetime.combine(datetime.now().date(), time(10)),
+        #                      datetime.combine(datetime.now().date(), time(12)))
+        # event2 = EventEntity('test2', datetime.combine(datetime.now().date(), time(11)),
+        #                      datetime.combine(datetime.now().date(), time(18)))
+        # event3 = EventEntity('test3', datetime.combine(datetime.now().date(), time(15)),
+        #                      datetime.combine(datetime.now().date(), time(20)))
+        #
+        # self.event_repository.save(event)
+        # self.event_repository.save(event1)
+        # self.event_repository.save(event2)
+        # self.event_repository.save(event3)
 
     def initialize(self):
         self.calendar = CalendarEntity()

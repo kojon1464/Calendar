@@ -2,8 +2,8 @@ from datetime import date, time, timedelta, datetime
 from typing import List
 
 from data.EventEntity import EventEntity
-from model.DayOrganizeHelper import DayOrganizeHelper
-from model.OrganizeStrategyInterface import OrganizeStrategyInterface
+from model.organize.DayOrganizeHelper import DayOrganizeHelper
+from model.organize.OrganizeStrategyInterface import OrganizeStrategyInterface
 from repository.EventRepository import EventRepository
 
 
