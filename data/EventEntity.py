@@ -72,6 +72,24 @@ class EventEntity(Base):
     def get_single_line_description(self) -> str:
         return re.sub(r'\s+', ' ', self.description)
 
+    def get_duration_str(self) -> str:
+        if self.loose:
+            return self.duration.__str__()
+        else:
+            return ''
+
+    def get_start_str(self) -> str:
+        if not self.loose:
+            return self.date_start.__str__()
+        else:
+            return ''
+
+    def get_end_str(self) -> str:
+        if not self.loose:
+            return self.date_end.__str__()
+        else:
+            return ''
+
 
     def copy_from(self, event):
         if event.id is not None:

@@ -3,6 +3,7 @@ from datetime import date, time
 from typing import List
 
 from data.EventEntity import EventEntity
+from data.enums.EventSortMethod import EventSortMethod
 from data.enums.OrganizationStrategy import OrganizationStrategy
 
 
@@ -76,4 +77,16 @@ class MainControllerInterface(ABC):
                         time_start: time,
                         time_end: time,
                         strategy: OrganizationStrategy):
+        pass
+
+    @abstractmethod
+    def loose_filter_changes(self, only_loose: bool):
+        pass
+
+    @abstractmethod
+    def name_filter_changes(self, name: str):
+        pass
+
+    @abstractmethod
+    def sort_changes(self, sort_method: EventSortMethod):
         pass

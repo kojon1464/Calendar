@@ -4,6 +4,7 @@ import tkinter as tk
 
 from controller.MainControllerInterface import MainControllerInterface
 from data.EventEntity import EventEntity
+from data.enums.EventSortMethod import EventSortMethod
 from data.enums.OrganizationStrategy import OrganizationStrategy
 from model.Model import Model
 from view.eventDetails.AbstractEventDetailsFrame import AbstractEventDetailsFrame
@@ -64,11 +65,13 @@ class MainController(MainControllerInterface):
             self.model.unsubscribe_details(frame)
         return destroy
 
-    def on_calendar_subscriber_close(self, frame):
+    def on_calendar_subscriber_close(self, frame, old_loose_filter, old_name_filter):
         def destroy(event):
             if not event.widget is event.widget.winfo_toplevel():
                 return  # not actually the window
             self.model.unsubscribe_calendar(frame)
+            self.model.use_loose_filter(old_loose_filter)
+            self.model.use_name_filter(old_name_filter)
         return destroy
 
     def create_event(self, event: EventEntity):
@@ -124,7 +127,12 @@ class MainController(MainControllerInterface):
         frame = StrategyChooserViewFrame(self.top_view, self)
         frame.pack()
 
-        self.top_view.bind('<Destroy>', self.on_calendar_subscriber_close(frame))
+        self.top_view.bind('<Destroy>', self.on_calendar_subscriber_close(frame,
+                                                                          self.model.loose_filter,
+                                                                          self.model.name_filter))
+
+        self.model.use_loose_filter(True)
+        self.model.use_name_filter('')
         self.model.subscribe_calendar(frame)
         self.model.notify_calendar()
 
@@ -138,3 +146,12 @@ class MainController(MainControllerInterface):
         self.model.set_organize_strategy(strategy.value[0]())
         self.model.organize_events(event_ids, date_start, date_end, time_start, time_end)
         self.top_view.destroy()
+
+    def loose_filter_changes(self, only_loose: bool):
+        self.model.use_loose_filter(only_loose)
+
+    def name_filter_changes(self, name: str):
+        self.model.use_name_filter(name)
+
+    def sort_changes(self, sort_method: EventSortMethod):
+        self.model.use_sort_method(sort_method)

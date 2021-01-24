@@ -23,7 +23,6 @@ class DayTimeStrategy(OrganizeStrategyInterface):
         for event in events:
             for helper in self.helpers:
                 day_time_value = event.day_time.value[0]
-                print(day_time_value)
                 period = self.common_window(time_start, time_end, day_time_value[1], day_time_value[2])
                 duration = timedelta(minutes=event.duration)
                 slots = helper.get_slots(period[0], period[1], duration)

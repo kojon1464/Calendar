@@ -31,7 +31,7 @@ class WeekViewFrame(tk.Frame, EventsViewInterface):
         self.parent = parent
         self.controller = controller
 
-        tk.Frame.__init__(self, parent)
+        tk.Frame.__init__(self, parent, borderwidth=2, relief="groove")
 
         self.canvas = tk.Canvas(self)
         self.canvas.pack(expand=True, fill=tk.BOTH)

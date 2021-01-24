@@ -32,11 +32,13 @@ class EventsListFrame(tk.Frame, EventsViewInterface, EventsListInterface):
         self.create_heading()
 
     def create_columns(self):
-        self.tree['columns'] = ('name', 'description', 'duration', 'priority', 'day_time')
+        self.tree['columns'] = ('name', 'description', 'start', 'end', 'duration', 'priority', 'day_time')
         self.tree.column('#0', width=0, stretch=tk.NO)
 
         self.tree.column('name', width=200, minwidth=150)
         self.tree.column('description', width=400, minwidth=200)
+        self.tree.column('start', width=150, minwidth=100)
+        self.tree.column('end', width=150, minwidth=100)
         self.tree.column('duration', width=150, minwidth=100)
         self.tree.column('priority', width=150, minwidth=100)
         self.tree.column('day_time', width=150, minwidth=100)
@@ -44,6 +46,8 @@ class EventsListFrame(tk.Frame, EventsViewInterface, EventsListInterface):
     def create_heading(self):
         self.tree.heading('name', text='Name', anchor=tk.W)
         self.tree.heading('description', text='Description', anchor=tk.W)
+        self.tree.heading('start', text='Start', anchor=tk.W)
+        self.tree.heading('end', text='End', anchor=tk.W)
         self.tree.heading('duration', text='Duration', anchor=tk.W)
         self.tree.heading('priority', text='Priority', anchor=tk.W)
         self.tree.heading('day_time', text='Time of the Day', anchor=tk.W)
@@ -56,7 +60,9 @@ class EventsListFrame(tk.Frame, EventsViewInterface, EventsListInterface):
     def insert_event(self, event: EventEntity):
         self.tree.insert('', 'end', text=event.id, values=(event.name
                                                            , event.get_single_line_description()
-                                                           , event.duration
+                                                           , event.get_start_str()
+                                                           , event.get_end_str()
+                                                           , event.get_duration_str()
                                                            , event.priority.name
                                                            , event.day_time.name.replace('_', ' ')))
 
@@ -67,7 +73,7 @@ class EventsListFrame(tk.Frame, EventsViewInterface, EventsListInterface):
         self.controller.update_event_clicked(event_id)
 
     def update_view(self, calendar: CalendarEntity):
-        self.update_rows(calendar.events_loose)
+        self.update_rows(calendar.events_for_list)
 
     def disable_double_click(self):
         self.tree.unbind('<Double-1>')

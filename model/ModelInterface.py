@@ -4,6 +4,7 @@ from typing import List
 
 from data.EventEntity import EventEntity
 from data.Statistics import Statistics
+from data.enums.EventSortMethod import EventSortMethod
 from model.organize.OrganizeStrategyInterface import OrganizeStrategyInterface
 
 
@@ -68,4 +69,16 @@ class ModelInterface(ABC):
 
     @abstractmethod
     def set_organize_strategy(self, strategy_instance: OrganizeStrategyInterface):
+        pass
+
+    @abstractmethod
+    def use_loose_filter(self, only_loose: bool):
+        pass
+
+    @abstractmethod
+    def use_name_filter(self, name: str):
+        pass
+
+    @abstractmethod
+    def use_sort_method(self, sort_method: EventSortMethod):
         pass

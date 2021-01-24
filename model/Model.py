@@ -5,6 +5,7 @@ from typing import List
 from data.CalendarEntity import CalendarEntity
 from data.EventEntity import EventEntity
 from data.Statistics import Statistics
+from data.enums.EventSortMethod import EventSortMethod
 from model.CalendarProviderInterface import CalendarProviderInterface
 from model.util.IcsUtil import export_file, import_file
 from model.ModelInterface import ModelInterface
@@ -30,6 +31,9 @@ class Model(CalendarProviderInterface, ObjectDetailsProviderInterface, ModelInte
     object_details_observers: List[ObjectDetailsObserverInterface] = []
     event_repository: EventRepository
     strategy_instance: OrganizeStrategyInterface
+    loose_filter: bool = False
+    name_filter: str = ''
+    sort_method: EventSortMethod = EventSortMethod.PRIORITY
 
     def __init__(self):
         self.notified = []
@@ -64,20 +68,57 @@ class Model(CalendarProviderInterface, ObjectDetailsProviderInterface, ModelInte
         week = self.get_week(self.calendar.date)
         self.calendar.week = week
         self.calendar.events = set(self.event_repository.get_not_loose_between_dates(week[0], week[6]))
-        self.calendar.events_loose = set(self.event_repository.get_loose())
+        self.calendar.events_for_list = self.get_events_for_list()
 
         self.notify_calendar()
+
+    def get_events_for_list(self) -> List[EventEntity]:
+        events = []
+        if self.loose_filter:
+            events  = self.event_repository.get_loose()
+        else:
+            events = self.event_repository.get_all()
+
+        self.sort_method.value[1](events)
+
+        return list(filter(lambda e: self.name_filter in e.name.lower(), events))
+
+    def use_loose_filter(self, only_loose: bool):
+        self.loose_filter = only_loose
+        self.update_calendar()
+
+    def use_name_filter(self, name: str):
+        self.name_filter = name
+        self.update_calendar()
+
+    def use_sort_method(self, sort_method: EventSortMethod):
+        self.sort_method = sort_method
+        self.update_calendar()
 
     def get_week(self, date: datetime.date) -> List[datetime.date]:
         return self.get_week_helper(date.year, self.get_week_number(date))
 
     def get_week_helper(self, year: int, week_number: int) -> List[datetime.date]:
         months = Calendar().yeardatescalendar(year, 12)[0]
-        weeks = [week for month in months for week in month]
+        weeks = self.remove_duplicated_weeks([week for month in months for week in month])
         return weeks[week_number]
 
+    def remove_duplicated_weeks(self, list):
+        new = [list[0]]
+        last = list[0]
+        for week in list:
+            if last[0] != week[0]:
+                last = week
+                new.append(week)
+
+        return new
+
+
     def get_week_number(self, date: datetime.date):
-        return date.isocalendar()[1]
+        week_number = date.isocalendar()[1]
+        if week_number == 53:
+            return 0
+        return week_number
 
     def change_to_next_week(self):
         week_delta = timedelta(7)

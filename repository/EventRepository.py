@@ -26,7 +26,7 @@ class EventRepository(AbstractRepository):
         self.session.commit()
 
     def get_loose(self):
-        return self.session.query(self.get_type()).filter(EventEntity.loose == True)
+        return self.session.query(self.get_type()).filter(EventEntity.loose == True).all()
 
     def get_not_loose(self):
         return self.session.query(self.get_type()).filter(EventEntity.loose == False).all()

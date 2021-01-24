@@ -8,6 +8,7 @@ from view.ControlViewFrame import ControlViewFrame
 from view.eventList.EventsListFrame import EventsListFrame
 from view.MainViewInterface import MainViewInterface
 from view.WeekViewFrame import WeekViewFrame
+from view.eventList.ListControlsFrame import ListControlsFrame
 
 TITLE = "Calendar"
 WINDOW_SIZE = "1700x900"
@@ -33,6 +34,9 @@ class MainView(CalendarObserverInterface, MainViewInterface):
 
         self.week_frame = WeekViewFrame(self.root, self.controller)
         self.week_frame.grid(column=1, row=0, sticky='nsew')
+
+        self.list_control_frame = ListControlsFrame(self.root, self.controller)
+        self.list_control_frame.grid(column=0, row=1, sticky='nsew')
 
         self.events_frame = EventsListFrame(self.root, self.controller)
         self.events_frame.grid(column=1, row=1, sticky='nsew')

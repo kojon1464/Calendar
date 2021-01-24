@@ -220,7 +220,8 @@ class EventDetailsFrame(AbstractEventDetailsFrame):
                             , self.get_before_timedelta()
                             , self.get_after_timedelta())
         event.id = self.id
-        event.uid = self.uid
+        if self.uid is not None:
+            event.uid = self.uid
         return event
 
     def time_window_changed(self):
